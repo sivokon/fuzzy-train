@@ -1,7 +1,9 @@
 ﻿using BulkSalesWebApp.Abstract;
 using BulkSalesWebApp.Data.Models;
+using BulkSalesWebApp.Data.Resources;
 using Microsoft.AspNetCore.Identity;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BulkSalesWebApp.Services
@@ -15,17 +17,20 @@ namespace BulkSalesWebApp.Services
             _userManager = userManager;
         }
 
-        public (bool isValidUser, string errorMessage) CheckUserPassword(LoginForm form)
+        public IEnumerable<User> RetrieveAllUsers()
         {
-            var user = _userManager.FindByEmailAsync(form.Email);
-            if (user.IsFaulted)
+            return _userManager.Users.ToList();
+        }
+
+        public bool UserPasswordIsValid(LoginForm form)
+        {
+            var user = _userManager.FindByEmailAsync(form.Email).Result;
+            if (user == null)
             {
-                return (false, user.Exception.Message);
+                return false;
             }
 
-            var result = _userManager.CheckPasswordAsync(user.Result, form.Password);
-
-            return (result.Result, null);
+            return _userManager.CheckPasswordAsync(user, form.Password).Result;
         }
 
         public (bool success, string errorMessage) CreateUser(RegisterForm form)
@@ -43,5 +48,6 @@ namespace BulkSalesWebApp.Services
 
             return (result.Succeeded, result.Errors.FirstOrDefault()?.Description);
         }
+
     }
 }

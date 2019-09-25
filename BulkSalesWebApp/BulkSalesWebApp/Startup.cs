@@ -2,6 +2,7 @@
 using BulkSalesWebApp.Abstract;
 using BulkSalesWebApp.Data;
 using BulkSalesWebApp.Data.Models;
+using BulkSalesWebApp.Data.Resources;
 using BulkSalesWebApp.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -30,6 +31,7 @@ namespace BulkSalesWebApp
             services.Configure<JwtTokenOptions>(Configuration.GetSection("JwtToken"));
 
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITokenService, TokenService>();
 
             services.AddDbContext<ApplicationDbContext>(
                 options => options.UseSqlServer(Configuration["ConnectionString:BulkSalesDb"]));
@@ -37,7 +39,6 @@ namespace BulkSalesWebApp
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-
 
             AddJwtServices(services);
 
@@ -65,16 +66,14 @@ namespace BulkSalesWebApp
 
         private void AddJwtServices(IServiceCollection services)
         {
-            services.AddAuthentication(x =>
+            services.AddAuthentication(authenticationOptions =>
             {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                authenticationOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                authenticationOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddJwtBearer(x =>
+            .AddJwtBearer(jwtBearerOptions =>
             {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
+                jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JwtToken:Secret"])),
