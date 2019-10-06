@@ -12,8 +12,18 @@ namespace BulkSalesWebApp.Data
 
         public DbSet<Post> Posts { get; set; }
 
-        public DbSet<PostDetails> PostDetails { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         public DbSet<Topic> Topic { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Comment>()
+                .HasOne(comment => comment.User)
+                .WithMany(user => user.Comments)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

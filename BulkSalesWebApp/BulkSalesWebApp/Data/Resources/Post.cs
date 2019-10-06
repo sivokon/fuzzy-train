@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace BulkSalesWebApp.Data.Resources
 {
@@ -10,16 +11,12 @@ namespace BulkSalesWebApp.Data.Resources
 
         public DateTimeOffset CreatedAt { get; set; }
 
-        public Guid PostDetailsId { get; set; }
-        public virtual PostDetails PostDetails { get; set; }
-
         public Guid UserId { get; set; }
         public virtual User User { get; set; }
 
         public Guid TopicId { get; set; }
         public virtual Topic Topic { get; set; }
 
-        public Guid ParentId { get; set; }
-        public virtual Post Parent { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
     }
 }

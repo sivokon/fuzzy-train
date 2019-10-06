@@ -22,6 +22,7 @@ namespace BulkSalesWebApp.Services
         {
             var claims = new List<Claim>
             {
+                //TODO: why we need claims?
                 new Claim(JwtRegisteredClaimNames.Sub, email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };

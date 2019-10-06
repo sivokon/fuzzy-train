@@ -28,6 +28,7 @@ namespace BulkSalesWebApp.Controllers
         }
 
         //POST: api/users/login
+        [Route("login")]
         [HttpPost(Name = nameof(Login))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -48,6 +49,7 @@ namespace BulkSalesWebApp.Controllers
         }
 
         //POST: api/users/register
+        [Route("register")]
         [HttpPost(Name = nameof(Register))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
